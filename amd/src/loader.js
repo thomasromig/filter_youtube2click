@@ -1,27 +1,41 @@
+/**
+ * YouTube 2-Click loader (DEBUG).
+ */
 define([], function () {
+  let bound = false;
+
+  /**
+   * Initialise the click handler for YouTube 2-click placeholders.
+   */
   function init() {
-    // Nur einmal binden (Sicherheitsnetz)
-    console.log("youtube2click init called"); // <-- DEBUG
-    // ...
-    if (window.__youtube2clickBound) {
+    console.log("[youtube2click] init() called");
+
+    if (bound) {
+      console.log("[youtube2click] already bound, skipping");
       return;
     }
-    window.__youtube2clickBound = true;
+    bound = true;
 
     document.addEventListener("click", function (e) {
+      console.log("[youtube2click] document click detected");
+
       const btn = e.target.closest(".youtube2click-load");
       if (!btn) {
         return;
       }
 
+      console.log("[youtube2click] load button clicked");
+
       e.preventDefault();
 
       const wrapper = btn.closest(".youtube2click-placeholder");
       if (!wrapper) {
+        console.log("[youtube2click] no wrapper found");
         return;
       }
 
       const videoId = wrapper.getAttribute("data-videoid");
+      console.log("[youtube2click] videoId:", videoId);
 
       const iframe = document.createElement("iframe");
       iframe.setAttribute("src", "https://www.youtube.com/embed/" + videoId);
@@ -31,13 +45,12 @@ define([], function () {
       iframe.style.height = "400px";
 
       wrapper.replaceWith(iframe);
+      console.log("[youtube2click] iframe inserted");
     });
   }
 
-  // 🔥 WICHTIG: Sofort initialisieren, sobald das Modul geladen wird
-  init();
+  console.log("[youtube2click] module loaded");
 
-  // Und zusätzlich exportieren (falls Moodle es doch noch explizit aufruft)
   return {
     init: init,
   };
